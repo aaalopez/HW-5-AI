@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campus Customs — Resolved Board (Problem 9 full run)</title>
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: #f9f9f7;
+    color: #0b0b0b;
+  }
+  header {
+    background: #1d3557;
+    color: white;
+    padding: 24px 32px;
+  }
+  header h1 { margin: 0 0 4px 0; font-size: 1.4rem; }
+  header p { margin: 0; color: #cdd8e8; font-size: 0.9rem; }
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+  .totals {
+    background: white;
+    border: 1px solid #e2e0db;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+  }
+  .totals b { display: block; font-size: 1.2rem; }
+  .ticket-block {
+    background: white;
+    border: 1px solid #e2e0db;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+  }
+  .ticket-block h2 { margin: 0 0 6px 0; font-size: 1.15rem; }
+  .ticket-block .caption { color: #52514e; font-size: 0.9rem; margin-bottom: 14px; }
+  .ticket-block img {
+    width: 100%;
+    border: 1px solid #e2e0db;
+    border-radius: 8px;
+    display: block;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+  }
+  .badge.needs { background: #fff6e0; color: #9a6a00; }
+  .badge.blocked { background: #fdeceb; color: #a4302f; }
+  .badge.draft { background: #eaf7ea; color: #1d7a1d; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Campus Customs — Resolved Board</h1>
+  <p>Real screenshots of the React dashboard after running the full agent team on all 3 tickets, following a clean db reset. See output/resolved_tickets.json and output/desk_tickets.html for the itemized detail and cash math.</p>
+</header>
+
+<main>
+  <div class="totals">
+    <div>Starting checking balance<br><b>$3,400.00</b></div>
+    <div>Ending checking balance<br><b>$160.00</b></div>
+    <div>Total funds spent<br><b>$3,240.00</b></div>
+  </div>
+
+  <div class="ticket-block">
+    <h2>Ticket 101 — Bulldog tee <span class="badge needs">Needs approval</span></h2>
+    <p class="caption">Tee was out of stock; invoice #501 ($840) was paid by human approval to unblock the vendor. A second run then correctly saw the invoice as paid, but flagged that fulfilling the order still needs a brand-new restock purchase order — something this system has no tool to execute, so it honestly stays at "needs approval" rather than claiming to be done.</p>
+    <img src="resolved_board_images/ticket_101.jpg" alt="Dashboard showing ticket 101's final resolution">
+  </div>
+
+  <div class="ticket-block">
+    <h2>Ticket 102 — Rent due <span class="badge blocked">Blocked</span></h2>
+    <p class="caption">Rent of $2,400 for lease #1 was paid by human approval. A second run then incorrectly treated the rent as still unpaid and reported it couldn't afford to pay again — a real, documented schema gap (leases have no "paid" status field the way invoices do), not a bug in the run itself. The $2,400 payment genuinely went through once, correctly.</p>
+    <img src="resolved_board_images/ticket_102.jpg" alt="Dashboard showing ticket 102's final resolution">
+  </div>
+
+  <div class="ticket-block">
+    <h2>Ticket 103 — Bulk hoodie discount <span class="badge draft">Draft ready</span></h2>
+    <p class="caption">No discount policy exists in the shop's data, so the agents correctly refused to invent one and prepared a customer draft quoting list price instead. No payment was needed or possible here.</p>
+    <img src="resolved_board_images/ticket_103.jpg" alt="Dashboard showing ticket 103's final resolution">
+  </div>
+</main>
+
+</body>
+</html>

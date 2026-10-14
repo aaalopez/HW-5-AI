@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campus Customs — Desk Tickets</title>
+<style>
+  :root {
+    --bg: #f7f5f2;
+    --card: #ffffff;
+    --ink: #22252a;
+    --muted: #5b6168;
+    --border: #e2e0db;
+    --navy: #1d3557;
+    --navy-soft: #e8edf4;
+    --accent: #c0392b;
+    --good: #2e7d32;
+    --good-bg: #eaf5ea;
+    font-size: 16px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 24px 32px;
+  }
+  header h1 { margin: 0 0 4px 0; font-size: 1.5rem; }
+  header p { margin: 0; color: #cdd8e8; font-size: 0.95rem; }
+
+  nav.tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 24px;
+    background: var(--navy);
+    border-bottom: 3px solid var(--navy);
+    flex-wrap: wrap;
+  }
+  nav.tabs button {
+    appearance: none;
+    border: none;
+    background: #16263f;
+    color: #cdd8e8;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    margin-top: 6px;
+  }
+  nav.tabs button.active {
+    background: var(--bg);
+    color: var(--navy);
+  }
+  nav.tabs button:hover:not(.active) {
+    background: #203a5e;
+  }
+
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .ticket-summary {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+  .ticket-summary h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--navy); }
+  .ticket-summary .meta { color: var(--muted); font-size: 0.9rem; }
+
+  section.block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+  }
+  section.block h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .tag.expected { background: var(--navy-soft); color: var(--navy); }
+  .tag.actual { background: #fdeeea; color: var(--accent); }
+  .tag.placeholder { background: #f0f0ee; color: var(--muted); }
+
+  .sub { margin-bottom: 16px; }
+  .sub:last-child { margin-bottom: 0; }
+  .sub h4 { margin: 0 0 6px 0; font-size: 0.95rem; color: var(--ink); }
+  .sub p, .sub ul { margin: 0; color: var(--ink); }
+  .sub ul { padding-left: 20px; }
+  .sub li { margin-bottom: 4px; }
+  code {
+    background: #f1efe9;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.9em;
+  }
+
+  .empty-note {
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .skip-list {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .blank-tab {
+    background: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 40px 22px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .jumplink {
+    appearance: none;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    font-weight: 600;
+    color: var(--navy);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+  }
+  .jumplink:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Campus Customs — Desk Tickets</h1>
+  <p>What we expected the agent team to do on each ticket (written before they ran), and what actually happened after a real full run (Problem 9) — plus an itemized cash ledger. Plain-English version for anyone checking the shop's work, no code required.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="t101">Ticket 101</button>
+  <button class="tab-btn" data-tab="t102">Ticket 102</button>
+  <button class="tab-btn" data-tab="t103">Ticket 103</button>
+  <button class="tab-btn" data-tab="cash">Cash</button>
+  <button class="tab-btn" data-tab="reflection">Reflection</button>
+</nav>
+
+<main>
+
+  <!-- TICKET 101 -->
+  <div class="panel active" id="t101">
+    <div class="ticket-summary">
+      <h2>Ticket 101 — Customer order: Bulldog tee</h2>
+      <div class="meta">From Tauhid Zaman · wants 1 Bulldog tee (white, size S) · linked to invoice #501</div>
+    </div>
+
+    <section class="block">
+      <h3><span class="tag expected">Expected</span> What we think will happen</h3>
+
+      <div class="sub">
+        <h4>1. Who the boss should call first, and why</h4>
+        <p><strong>Inventory</strong> — the very first question is whether the shop even has this tee in stock right now. That one answer decides everything else: if it's on the shelf, this is a quick "yes, ready to go." If it's not, the ticket turns into a restock/vendor question instead.</p>
+      </div>
+
+      <div class="sub">
+        <h4>2. Delegations we expect</h4>
+        <ul>
+          <li><strong>Boss → Inventory</strong> — check real stock for this tee/size.</li>
+          <li><strong>Boss (or Inventory) → Accounting</strong> — this ticket is already linked to an invoice (#501). Since the tee is expected to be out of stock, Accounting needs to look that invoice up directly, see which vendor it belongs to, and check whether the shop can actually afford to pay it right now.</li>
+          <li><strong>Boss → Customer Service</strong> — once we know the real stock and vendor situation, write a draft reply back to the customer explaining what's going on (draft only — nothing gets sent automatically).</li>
+        </ul>
+        <div class="skip-list">We do <strong>not</strong> expect Facilities to be involved — there's nothing about the lease or rent on this ticket.</div>
+      </div>
+
+      <div class="sub">
+        <h4>3. MCP tools we expect to get used</h4>
+        <ul>
+          <li><code>get_inventory_status</code> — real stock for the tee/size (Inventory)</li>
+          <li><code>get_invoice_status</code> — look up invoice #501 directly by its id (Accounting)</li>
+          <li><code>get_vendor_shipping_status</code> — once the vendor is known from the invoice, check if they're actually able to ship right now (Accounting or Inventory)</li>
+          <li><code>get_cash_balance</code> — check if the shop can afford to pay that invoice (Accounting)</li>
+          <li><code>get_pricing</code> — confirm the real price of the tee, in case Customer Service needs it for the draft (optional)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3><span class="tag actual">Actual</span> What actually happened <span class="tag" style="background:#fff6e0;color:#9a6a00;">Needs approval</span></h3>
+
+      <div class="sub">
+        <h4>Who the boss called first</h4>
+        <p><strong>Inventory</strong> — matched our expectation exactly. Boss's first delegation confirmed CC-TEE-WHITE/S had 0 on hand before doing anything else.</p>
+      </div>
+
+      <div class="sub">
+        <h4>Delegations that actually happened</h4>
+        <ul>
+          <li><strong>Boss → Inventory</strong> — confirmed 0 on hand, vendor (Bulldog Print Co) has a 5-day lead time.</li>
+          <li><strong>Boss → Accounting</strong> — looked up invoice #501 directly: open, $840, blocking shipment (run 1); after a human approved payment, a second run confirmed it's now <em>paid</em> and no longer blocking.</li>
+          <li><strong>Boss → Customer Service</strong> — prepared an unsent draft for Tauhid Zaman.</li>
+        </ul>
+        <div class="skip-list">Facilities was correctly not involved, exactly as expected. One thing we didn't predict: after the invoice was paid, Boss still flagged a <em>second</em> approval need — placing a brand-new restock purchase order, which this system has no tool to execute (only paying an existing invoice/lease is supported).</div>
+      </div>
+
+      <div class="sub">
+        <h4>MCP tools actually used</h4>
+        <ul>
+          <li><code>get_inventory_status</code>, <code>list_vendors</code>, <code>get_vendor_shipping_status</code> — Inventory</li>
+          <li><code>get_invoice_status</code>, <code>get_vendor_shipping_status</code>, <code>get_cash_balance</code> — Accounting</li>
+          <li><code>list_tickets</code> — Boss, to pull the real ticket record</li>
+        </ul>
+        <div class="skip-list">Customer Service called no tool directly — it trusted the facts Inventory/Accounting had already verified, per the "trust facts you're given" prompt rule. <code>get_pricing</code> (listed as optional in Expected) wasn't needed.</div>
+      </div>
+
+      <div class="sub">
+        <h4>Final status &amp; cash impact</h4>
+        <p><strong>needs_human_approval</strong> — invoice #501 ($840.00) was paid by human approval, unblocking the vendor; a new restock purchase is still pending human approval (no tool exists to place it). Cash balance: <strong>$3,400.00 → $2,560.00</strong> (−$840.00).</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- TICKET 102 -->
+  <div class="panel" id="t102">
+    <div class="ticket-summary">
+      <h2>Ticket 102 — Rent notice</h2>
+      <div class="meta">From Elm City Properties (landlord) · note says rent is due in 2 days · linked to lease #1</div>
+    </div>
+
+    <section class="block">
+      <h3><span class="tag expected">Expected</span> What we think will happen</h3>
+
+      <div class="sub">
+        <h4>1. Who the boss should call first, and why</h4>
+        <p><strong>Facilities</strong> — this is fundamentally a lease question. Facilities owns checking the real rent amount and real due date against the shop's own calendar, rather than just trusting whatever the landlord's note claims.</p>
+      </div>
+
+      <div class="sub">
+        <h4>2. Delegations we expect</h4>
+        <ul>
+          <li><strong>Boss → Facilities</strong> — verify the real due date and rent amount for lease #1.</li>
+          <li><strong>Facilities (or boss) → Accounting</strong> — only if Facilities confirms the rent is actually due soon, check the shop's real cash balance to see if paying it is affordable.</li>
+        </ul>
+        <div class="skip-list">We do <strong>not</strong> expect Inventory or Customer Service to be involved — there's no product question here, and this ticket isn't customer-facing.</div>
+      </div>
+
+      <div class="sub">
+        <h4>3. MCP tools we expect to get used</h4>
+        <ul>
+          <li><code>get_lease_due_status</code> — real rent amount and days until due, measured against the shop's own "today" (Facilities)</li>
+          <li><code>get_cash_balance</code> — check affordability once the real due date/amount is confirmed (Accounting)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3><span class="tag actual">Actual</span> What actually happened <span class="tag" style="background:#fdeceb;color:#a4302f;">Blocked</span></h3>
+
+      <div class="sub">
+        <h4>Who the boss called first</h4>
+        <p><strong>Facilities</strong> — matched our expectation exactly.</p>
+      </div>
+
+      <div class="sub">
+        <h4>Delegations that actually happened</h4>
+        <ul>
+          <li><strong>Boss → Facilities</strong> — verified lease #1: $2,400/month, due 2026-09-02, not yet overdue against the shop's date_today.</li>
+          <li><strong>Boss → Accounting</strong> — checked cash balance ($2,560 before payment) and judged the rent affordable; after a human approved and paid it, a second run re-checked accounting.</li>
+        </ul>
+        <div class="skip-list">Inventory and Customer Service were correctly not involved, exactly as expected.</div>
+      </div>
+
+      <div class="sub">
+        <h4>MCP tools actually used</h4>
+        <ul>
+          <li><code>get_lease_due_status</code> — Facilities</li>
+          <li><code>get_cash_balance</code> — Accounting</li>
+          <li><code>list_tickets</code> — Boss</li>
+        </ul>
+      </div>
+
+      <div class="sub">
+        <h4>Final status &amp; cash impact — and a real limitation we found</h4>
+        <p>The $2,400 rent payment for lease #1 was approved and paid once, correctly: cash balance <strong>$2,560.00 → $160.00</strong> (−$2,400.00). But re-running the ticket afterward produced <strong>blocked</strong>, not a clean resolved state: Facilities and Accounting have no way to know this period's rent was already paid, because (unlike invoices, which have a <code>status</code> column) the <code>leases</code> table has no paid/settled field for <code>get_lease_due_status</code> to check. So the second run re-reported the same $2,400 as still due and correctly refused to double-pay with only $160 left. This is a genuine schema gap, not a payment that failed — documented here rather than silently worked around.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- TICKET 103 -->
+  <div class="panel" id="t103">
+    <div class="ticket-summary">
+      <h2>Ticket 103 — Bulk hoodie discount request</h2>
+      <div class="meta">From Yale AI Club · wants 20 Navy hoodies (size M) at a bulk discount</div>
+    </div>
+
+    <section class="block">
+      <h3><span class="tag expected">Expected</span> What we think will happen</h3>
+
+      <div class="sub">
+        <h4>1. Who the boss should call first, and why</h4>
+        <p><strong>Inventory</strong> — before anyone can talk about a discount, we need to know whether the shop can even supply 20 hoodies. There are only 8 on the shelf, so this is as much a stock/restock question as it is a pricing question.</p>
+      </div>
+
+      <div class="sub">
+        <h4>2. Delegations we expect</h4>
+        <ul>
+          <li><strong>Boss → Inventory</strong> — check real stock (8 on hand vs. 20 requested) and whether the usual vendor could restock the shortfall.</li>
+          <li><strong>Boss → Accounting</strong> — check the real unit cost on this hoodie so the discount request can be judged against it (the shop shouldn't sell below cost without flagging it), and check the vendor's invoice situation since restocking runs through the same vendor as ticket 101.</li>
+          <li><strong>Boss → Customer Service</strong> — draft a reply to Yale AI Club about what's actually possible (draft only).</li>
+        </ul>
+        <div class="skip-list">We do <strong>not</strong> expect Facilities to be involved — nothing here touches the lease or rent.</div>
+      </div>
+
+      <div class="sub">
+        <h4>3. MCP tools we expect to get used</h4>
+        <ul>
+          <li><code>get_inventory_status</code> — real stock for the hoodie/size (Inventory)</li>
+          <li><code>list_vendors</code> / <code>get_vendor_shipping_status</code> — check whether the apparel vendor can restock the shortfall (Inventory)</li>
+          <li><code>get_pricing</code> — real unit cost and list price, to judge the discount request (Accounting)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3><span class="tag actual">Actual</span> What actually happened <span class="tag" style="background:#eaf7ea;color:#1d7a1d;">Draft ready</span></h3>
+
+      <div class="sub">
+        <h4>Who the boss called first</h4>
+        <p><strong>Inventory</strong> — matched our expectation exactly.</p>
+      </div>
+
+      <div class="sub">
+        <h4>Delegations that actually happened</h4>
+        <ul>
+          <li><strong>Boss → Inventory</strong> — confirmed 8 of 20 CC-HOOD-NAVY/M on hand; Bulldog Print Co can ship a restock (5-day lead, no open invoices).</li>
+          <li><strong>Boss → Accounting</strong> — checked real unit cost/list price ($22/$58) and confirmed <em>no</em> bulk-discount or override policy exists anywhere in the shop's data, so none was invented.</li>
+          <li><strong>Boss → Customer Service</strong> — drafted a reply to Yale AI Club quoting list price only.</li>
+        </ul>
+        <div class="skip-list">Facilities was correctly not involved, exactly as expected.</div>
+      </div>
+
+      <div class="sub">
+        <h4>MCP tools actually used</h4>
+        <ul>
+          <li><code>get_inventory_status</code>, <code>list_vendors</code>, <code>get_vendor_shipping_status</code> — Inventory</li>
+          <li><code>get_pricing</code> — Accounting</li>
+          <li><code>list_tickets</code> — Boss</li>
+        </ul>
+      </div>
+
+      <div class="sub">
+        <h4>Final status &amp; cash impact</h4>
+        <p><strong>draft_ready</strong> — no discount was authorized or promised; restocking the 12-unit shortfall would need a new purchase order, flagged for a human (no tool exists to place one). Cash balance unchanged: <strong>$0.00 impact</strong>.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- CASH -->
+  <div class="panel" id="cash">
+    <div class="ticket-summary">
+      <h2>Cash — itemized from this full run</h2>
+      <div class="meta">Working db reset to original seed values immediately before this run, so every number below is from one clean, real run — not accumulated across test sessions.</div>
+    </div>
+
+    <section class="block">
+      <h3>Starting checking balance (after reset)</h3>
+      <p style="font-size:1.4rem;font-weight:700;">$3,400.00</p>
+    </section>
+
+    <section class="block">
+      <h3>Ticket 101 — Bulldog tee</h3>
+      <p><strong>−$840.00</strong> — paid invoice #501 to Bulldog Print Co (the reprint/restock invoice blocking this order), approved by Araceli Lopez (shop owner).</p>
+      <p class="skip-list">Balance after: $3,400.00 − $840.00 = <strong>$2,560.00</strong></p>
+    </section>
+
+    <section class="block">
+      <h3>Ticket 102 — Rent due</h3>
+      <p><strong>−$2,400.00</strong> — paid lease #1's rent to Elm City Properties, approved by Araceli Lopez (shop owner).</p>
+      <p class="skip-list">Balance after: $2,560.00 − $2,400.00 = <strong>$160.00</strong></p>
+    </section>
+
+    <section class="block">
+      <h3>Ticket 103 — Bulk hoodie discount</h3>
+      <p><strong>$0.00</strong> — no discount policy exists in the shop's data, so none was approved; the hoodie restock would require a brand-new purchase order (no tool exists to place one), so nothing was paid.</p>
+      <p class="skip-list">Balance unchanged: <strong>$160.00</strong></p>
+    </section>
+
+    <section class="block">
+      <h3>Ending checking balance</h3>
+      <p style="font-size:1.4rem;font-weight:700;">$3,400.00 − $840.00 − $2,400.00 − $0.00 = $160.00</p>
+      <p class="skip-list">Verified live against the working db: <code>GET /cash</code> on <code>data/campus_customs_new.db</code> returns <code>{"balance": 160.0}</code> after this run — matches exactly.</p>
+    </section>
+  </div>
+
+  <!-- REFLECTION (placeholder) -->
+  <div class="panel" id="reflection">
+    <div class="ticket-summary">
+      <h2>Reflection</h2>
+      <div class="meta">Based on the real Problem 9 run — see the Ticket 101/102/103 tabs and the Cash tab on this page for the receipts.</div>
+    </div>
+
+    <section class="block">
+      <h3>How'd the agents actually do, per ticket?</h3>
+      <div class="sub">
+        <h4>101 — Bulldog tee: good</h4>
+        <p>Inventory caught the stockout right away, accounting found invoice #501 and the real vendor block, customer service didn't promise a ship date it couldn't back up — see the full trace on the <button class="jumplink" data-tab="t101">Ticket 101 tab</button>. After we paid the invoice, boss didn't just assume the order was done — it correctly said "now we need a new restock order" instead of hand-waving it. That's the right call. The real evidence this worked is the money actually moving: <button class="jumplink" data-tab="cash">Cash tab</button> shows $3,400.00 → $2,560.00, the exact $840.00 invoice amount. Only knock: it burned some extra hops double-checking stuff before we tightened the prompts.</p>
+      </div>
+      <div class="sub">
+        <h4>102 — Rent: mixed</h4>
+        <p>First pass was great — real due date, real balance, right call to ask a human before paying (see <button class="jumplink" data-tab="t102">Ticket 102 tab</button>). We approved it and the <button class="jumplink" data-tab="cash">Cash tab</button> confirms it actually happened: $2,560.00 → $160.00, exactly the $2,400.00 rent. Second pass (re-running the same ticket after we paid) is where it fell apart: it couldn't tell the $2,400 was already paid and flagged it as still owed — that's the <strong>blocked</strong> status you see on the Ticket 102 tab, not a failed payment. Not really the agents' fault — the lease table just has no "paid" flag for them to check. Good reasoning, bad data.</p>
+      </div>
+      <div class="sub">
+        <h4>103 — Bulk discount: best one</h4>
+        <p>One clean pass, no back-and-forth (see <button class="jumplink" data-tab="t103">Ticket 103 tab</button>). Correctly refused to invent a discount policy that doesn't exist (there isn't one in the data), quoted the real $58/unit price, flagged the 12-unit shortfall and restock as a human call. No payment needed, none made — the <button class="jumplink" data-tab="cash">Cash tab</button> shows $0.00 impact for this ticket, which is exactly right given nothing was approved. Exactly right.</p>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>Actual vs. Expected</h3>
+
+      <div class="sub">
+        <h4>101 — compare the Expected and Actual blocks on the <button class="jumplink" data-tab="t101">Ticket 101 tab</button></h4>
+        <p>Nailed it on the first pass: Boss called Inventory first like we expected, and all 3 delegation targets (Inventory, Accounting, Customer Service) showed up exactly as predicted, Facilities correctly skipped. Tool-wise, we expected 5 (<code>get_inventory_status</code>, <code>get_invoice_status</code>, <code>get_vendor_shipping_status</code>, <code>get_cash_balance</code>, optionally <code>get_pricing</code>) and got 4 of those for real, plus <code>list_vendors</code> and <code>list_tickets</code> we hadn't called out — <code>get_pricing</code> never got used since nobody needed to quote a price here. The one thing the Expected plan flat-out didn't see coming: once we actually paid invoice #501 (<button class="jumplink" data-tab="cash">Cash tab</button>: −$840.00), the ticket didn't just close out. Boss came back with a <em>second</em> ask — approve a brand-new restock purchase order — because "the invoice is paid" and "the item is back in stock" are two different problems, and our plan only thought about the first one.</p>
+      </div>
+
+      <div class="sub">
+        <h4>102 — compare the Expected and Actual blocks on the <button class="jumplink" data-tab="t102">Ticket 102 tab</button></h4>
+        <p>Also nailed Facilities-first and the Facilities→Accounting handoff, tools matched almost exactly (<code>get_lease_due_status</code>, <code>get_cash_balance</code>, plus <code>list_tickets</code> we didn't call out). First run played out exactly like the plan: verify the real due date, check affordability, ask a human — and it was affordable, which the <button class="jumplink" data-tab="cash">Cash tab</button> backs up (−$2,400.00 landed exactly on $160.00, not negative). Where Actual and Expected really diverge is the part we never planned for at all — a <em>re-run</em>. The Expected section assumed one clean pass to a decision; it never considered "what happens if we check this same ticket again after paying." That's on us, not the agents: we planned for the approval step, not for what comes after it.</p>
+      </div>
+
+      <div class="sub">
+        <h4>103 — compare the Expected and Actual blocks on the <button class="jumplink" data-tab="t103">Ticket 103 tab</button></h4>
+        <p>Closest match of the three, basically no surprises. Inventory first, then Accounting, then Customer Service, Facilities skipped — exactly the plan. Tools matched too: <code>get_inventory_status</code>, <code>list_vendors</code>, <code>get_vendor_shipping_status</code> for Inventory, <code>get_pricing</code> for Accounting, same as we called out. Only real difference from the plan: Customer Service never called a tool itself — it just used the facts Inventory and Accounting had already verified instead of double-checking, which the Expected section didn't think to predict but makes total sense in hindsight. Matches the <button class="jumplink" data-tab="cash">Cash tab</button> too: $0.00 impact, since nothing here ever needed approval.</p>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>Would one agent with tools have been simpler?</h3>
+      <p>Honestly, yeah — for these 3 tickets. None of them needed real specialization; there was never a case where two specialists had to double-check or disagree with each other. Boss mostly just played middleman passing messages back and forth, and that's exactly where we burned tool calls and tokens — see the <button class="jumplink" data-tab="t102">Ticket 102 tab</button> for the confused double-payment check and the <button class="jumplink" data-tab="t103">Ticket 103 tab</button> for the early "discount authority" search loop. One agent with all 9 tools would've been faster and cheaper here. The 5-agent split only earns its keep when you actually need separation of duties — like accounting never being allowed to approve its own payment (that boundary is exactly why every real payment on the <button class="jumplink" data-tab="cash">Cash tab</button> has a human name attached, not an agent). For "look up some facts and summarize them," splitting into 5 agents was overhead this round.</p>
+    </section>
+
+    <section class="block">
+      <h3>3 new problems this team COULD solve with what we already built</h3>
+      <ul>
+        <li><strong>Another vendor invoice goes overdue</strong> and blocks a different SKU — same exact pattern as ticket 101 (see <button class="jumplink" data-tab="t101">Ticket 101 tab</button>: invoice #501 blocking Bulldog Print Co). Inventory + Accounting already handle this.</li>
+        <li><strong>A second rent/lease notice</strong> comes in for a different space — same pattern as ticket 102's <em>first</em> pass (see <button class="jumplink" data-tab="t102">Ticket 102 tab</button>). Facilities + Accounting already verify real due dates and affordability correctly, as long as it's a first-time check.</li>
+        <li><strong>A customer asks about a different item</strong> — stock, price, whether it's in — for any SKU in <code>inventory</code>/<code>pricing</code> (not just the tee or hoodie from <button class="jumplink" data-tab="t101">Ticket 101</button>/<button class="jumplink" data-tab="t103">Ticket 103</button>). Inventory + Customer Service already cover this with <code>get_inventory_status</code>/<code>get_pricing</code>, no new tooling needed.</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <h3>3 new problems this team could NOT solve, and what's missing</h3>
+      <ul>
+        <li><strong>Actually placing a new restock order with a vendor</strong> — the exact wall we hit on both <button class="jumplink" data-tab="t101">Ticket 101</button> and <button class="jumplink" data-tab="t103">Ticket 103</button> (Bulldog Print Co can ship, but nobody can tell it to). Needs a new <code>place_vendor_order</code> tool that writes a new row to <code>invoices</code>, gated behind human approval the same way <code>execute_payment</code> is. No new agent needed — Inventory or Accounting could hold it.</li>
+        <li><strong>Rent across multiple months</strong> — the exact bug we hit on <button class="jumplink" data-tab="t102">Ticket 102</button> (see the <button class="jumplink" data-tab="cash">Cash tab</button> too — the $2,400 payment is real, the "still owed" re-check is the bug). <code>leases</code> needs a paid-through date or a billing-period concept, plus a tool to check/update it. Facilities could use it as-is, no new agent.</li>
+        <li><strong>Campus Customs opens a second storefront</strong> — everything right now (inventory, cash_accounts, vendors) assumes one shop. A second location needs a "location" column threaded through the schema and tools, and probably a new agent above Boss to arbitrate between two desks sharing (or not sharing) vendors and cash.</li>
+      </ul>
+    </section>
+  </div>
+
+</main>
+
+<script>
+  function activateTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="' + tabId + '"]').classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+    document.getElementById(tabId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.querySelectorAll('.jumplink').forEach(link => {
+    link.addEventListener('click', () => activateTab(link.dataset.tab));
+  });
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Secrets — never commit the real .env (use .env.example as the template)
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+
+# Claude Code session tooling (not part of the assignment deliverable)
+.claude/
+
+# OS cruft
+.DS_Store
+Thumbs.db
